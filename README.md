@@ -39,7 +39,7 @@ Each simulation frame:
 
 - Each planet is rendered as a shaded 3D sphere
 
-- The view can include rotation, zoom, or camera movement (if implemented)
+- The view can include rotation, zoom, or camera movement
 
 - Uses GLM for matrix transformations (model, view, projection)
 
