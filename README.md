@@ -100,7 +100,12 @@ Planet venus(1.8f, 0.815f, glm::vec3(10.8f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 4
 Planet name (radius, mass, position, velocity, label)
 ```
 
+The planets in the simulation below are all red becuase they are being used as PlaceHolders
+
 ​![Sim](https://github.com/slugoguls/Planet-Simulation/blob/main/image.png?raw=true)
  
 ​
+
+📄 License
  
+MIT License — feel free to use, modify, and share with attribution.
