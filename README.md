@@ -70,7 +70,7 @@ Each simulation frame:
 🛠 Build Instructions
 
 ```
-git clone https://github.com/yourusername/planet-simulation.git
+git clone https://github.com/slugoguls/planet-simulation.git
 
 cd planet-simulation
 
@@ -100,7 +100,7 @@ Planet venus(1.8f, 0.815f, glm::vec3(10.8f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 4
 Planet name (radius, mass, position, velocity, label)
 ```
 
-​!{image alt}{image ulr}
+​![image alt](image url)
  
 ​
  
