@@ -102,7 +102,7 @@ Planet name (radius, mass, position, velocity, label)
 
 The planets in the simulation below are all red becuase they are being used as PlaceHolders
 
-
+![sim](https://github.com/slugoguls/Planet-Simulation/blob/main/planets.png?raw=true)
  
 ​
 
