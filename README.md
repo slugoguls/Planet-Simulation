@@ -109,8 +109,8 @@ Planet name (radius, mass, position, velocity, label)
 | A         | Move camera left        |
 | S         | Move camera backward    |
 | D         | Move camera right       |
-| Q         | Move camera down        |
-| E         | Move camera up          |
+| Q         | Move camera up          |
+| E         | Move camera down        |
 | Mouse     | Look around             |
 
 The planets in the simulation below are all red becuase they are being used as PlaceHolders
