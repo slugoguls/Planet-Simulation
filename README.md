@@ -1,12 +1,12 @@
-🌍 Planetary Simulation using C++ & OpenGL
+# 🌍 Planetary Simulation using C++ & OpenGL
 
 A real-time, interactive 3D simulation that visualizes gravitational interactions between celestial bodies. Built with C++, OpenGL, and GLM, this project offers a physics-accurate and scalable system for simulating planetary motion using Newtonian mechanics.
 
-🧠 Project Overview
+# 🧠 Project Overview
 
 This simulation models gravitational attraction between multiple planets in 3D space. It calculates the net gravitational force on each planet based on the masses and distances of all other planets and updates their velocity and position accordingly. All rendering is handled using OpenGL, with support from GLFW for window/context management and GLM for math operations.
 
-🧮 Physics Calculations
+# 🧮 Physics Calculations
 
 The simulation uses Newton's Law of Universal Gravitation:
 
@@ -35,7 +35,7 @@ Each simulation frame:
 
 - Velocity Verlet or semi-implicit Euler integration may be used for numerical stability.
  
-​🖥 Rendering
+# ​🖥 Rendering
 
 - Each planet is rendered as a shaded 3D sphere
 
@@ -45,7 +45,7 @@ Each simulation frame:
 
 - Optional glow or lighting effects can be added via shaders
 
- 🧰 Tech Stack
+ # 🧰 Tech Stack
  
 - C++ — Core simulation and application logic
 
@@ -55,9 +55,9 @@ Each simulation frame:
 
 - GLM — Math library for vectors, matrices, and transformations
 
-📦 Installation & Build
+# 📦 Installation & Build
 
-🔧 Prerequisites
+## 🔧 Prerequisites
 
 - C++17 or later
 
@@ -67,7 +67,7 @@ Each simulation frame:
 
 - GLFW and GLM
 
-🛠 Build Instructions
+## 🛠 Build Instructions
 
 ```
 git clone https://github.com/slugoguls/planet-simulation.git
@@ -83,9 +83,9 @@ make
 ./PlanetSim
 
 ```
-💡 Tip: If using Visual Studio or Xcode, generate appropriate project files via cmake -G.
+###💡 Tip: If using Visual Studio or Xcode, generate appropriate project files via cmake -G.
 
-🔄 Customization
+## 🔄 Customization
 
 To add your own planets:
 
@@ -106,6 +106,6 @@ The planets in the simulation below are all red becuase they are being used as P
  
 ​
 
-📄 License
+# 📄 License
  
 MIT License — feel free to use, modify, and share with attribution.
