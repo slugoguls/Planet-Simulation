@@ -34,66 +34,66 @@ void Sphere::setupSphere() {
 }
 
 void Sphere::generateVertices() {
-    vertices.clear();
-    float x, y, z, xy;
-    float sectorStep = 2 * glm::pi<float>() / static_cast<float>(sectorCount);
-    float stackStep = glm::pi<float>() / static_cast<float>(stackCount);
-    float sectorAngle, stackAngle;
+    this->vertices.clear();
+    double x, y, z, xy;
+    double sectorStep = 2 * glm::pi<double>() / static_cast<double>(this->sectorCount);
+    double stackStep = glm::pi<double>() / static_cast<double>(this->stackCount);
+    double sectorAngle, stackAngle;
 
-    for (int i = 0; i <= stackCount; ++i) {
-        stackAngle = glm::pi<float>() / 2 - i * stackStep;  // from pi/2 to -pi/2
-        xy = radius * cosf(stackAngle);  // r * cos(u)
-        z = radius * sinf(stackAngle);  // r * sin(u)
+    for (int i = 0; i <= this->stackCount; ++i) {
+        stackAngle = glm::pi<double>() / 2 - i * stackStep;  // from pi/2 to -pi/2
+        xy = this->radius * cos(stackAngle);  // r * cos(u)
+        z = this->radius * sin(stackAngle);  // r * sin(u)
 
-        for (int j = 0; j <= sectorCount; ++j) {
+        for (int j = 0; j <= this->sectorCount; ++j) {
             sectorAngle = j * sectorStep;  // from 0 to 2pi
 
-            x = xy * cosf(sectorAngle);   // r * cos(u) * cos(v)
-            y = xy * sinf(sectorAngle);   // r * cos(u) * sin(v)
+            x = xy * cos(sectorAngle);   // r * cos(u) * cos(v)
+            y = xy * sin(sectorAngle);   // r * cos(u) * sin(v)
 
-            vertices.push_back(x);
-            vertices.push_back(y);
-            vertices.push_back(z);
+            this->vertices.push_back(static_cast<float>(x));
+            this->vertices.push_back(static_cast<float>(y));
+            this->vertices.push_back(static_cast<float>(z));
         }
     }
 }
 
 void Sphere::generateIndices() {
-    indices.clear();
+    this->indices.clear();
     int k1, k2;
 
-    for (int i = 0; i < stackCount; ++i) {
-        k1 = i * (sectorCount + 1);     // beginning of current stack
-        k2 = k1 + sectorCount + 1;      // beginning of next stack
+    for (int i = 0; i < this->stackCount; ++i) {
+        k1 = i * (this->sectorCount + 1);     // beginning of current stack
+        k2 = k1 + this->sectorCount + 1;      // beginning of next stack
 
-        for (int j = 0; j < sectorCount; ++j, ++k1, ++k2) {
+        for (int j = 0; j < this->sectorCount; ++j, ++k1, ++k2) {
             if (i != 0) {
-                indices.push_back(k1);
-                indices.push_back(k2);
-                indices.push_back(k1 + 1);
+                this->indices.push_back(k1);
+                this->indices.push_back(k2);
+                this->indices.push_back(k1 + 1);
             }
 
-            if (i != (stackCount - 1)) {
-                indices.push_back(k1 + 1);
-                indices.push_back(k2);
-                indices.push_back(k2 + 1);
+            if (i != (this->stackCount - 1)) {
+                this->indices.push_back(k1 + 1);
+                this->indices.push_back(k2);
+                this->indices.push_back(k2 + 1);
             }
         }
     }
 }
 
 void Sphere::bindBuffers() {
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+    glGenVertexArrays(1, &this->VAO);
+    glGenBuffers(1, &this->VBO);
+    glGenBuffers(1, &this->EBO);
 
-    glBindVertexArray(VAO);
+    glBindVertexArray(this->VAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(float), this->vertices.data(), GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(unsigned int), this->indices.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -107,35 +107,51 @@ void Sphere::unbindBuffers() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void Sphere::update(float deltaTime) {
-    position += velocity * deltaTime;
+void Sphere::update(double deltaTime) {
+    if (this->isStatic) return;
+
+    // Velocity Verlet Integration
+    // 1. Calculate new position
+    this->position += this->velocity * deltaTime + 0.5 * this->acceleration * deltaTime * deltaTime;
+
+    // 2. Store current acceleration for next step
+    glm::dvec3 prevAcceleration = this->acceleration;
+
+    // 3. Calculate new acceleration based on accumulated force
+    this->acceleration = this->currentForce / this->mass;
+
+    // 4. Calculate new velocity (using average acceleration)
+    this->velocity += 0.5 * (prevAcceleration + this->acceleration) * deltaTime;
 }
 
-void Sphere::applyForce(const glm::vec3& force) {
-    glm::vec3 acceleration = force / mass;
-    velocity += acceleration;
+void Sphere::applyForce(const glm::dvec3& force) {
+    this->currentForce += force;
 }
 
-glm::vec3 Sphere::getPosition() const {
-    return position;
+void Sphere::resetForce() {
+    this->currentForce = glm::dvec3(0.0);
 }
 
-void Sphere::setPosition(const glm::vec3& pos) {
-    position = pos;
+glm::dvec3 Sphere::getPosition() const {
+    return this->position;
 }
 
-glm::vec3 Sphere::getVelocity() const {
-    return velocity;
+void Sphere::setPosition(const glm::dvec3& pos) {
+    this->position = pos;
 }
 
-void Sphere::setVelocity(const glm::vec3& vel) {
-    velocity = vel;
+glm::dvec3 Sphere::getVelocity() const {
+    return this->velocity;
+}
+
+void Sphere::setVelocity(const glm::dvec3& vel) {
+    this->velocity = vel;
 }
 
 float Sphere::getMass() const {
-    return mass;
+    return this->mass;
 }
 
-void Sphere::setMass(float m) {
-    mass = m;
+void Sphere::setMass(double m) {
+    this->mass = m;
 }

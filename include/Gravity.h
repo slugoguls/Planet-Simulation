@@ -5,10 +5,10 @@
 
 class Gravity {
 public:
-    Gravity(float G);
+    Gravity(double G);
 
     void addObject(Sphere* obj);
-    void applyAll(float deltaTime);
+    void applyAll(double deltaTime);
 
 private:
     float G;

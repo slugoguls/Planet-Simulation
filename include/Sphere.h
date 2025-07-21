@@ -10,17 +10,18 @@ public:
 
     void draw() const;
 
-    glm::vec3 getPosition() const;
-    void setPosition(const glm::vec3& pos);
+    glm::dvec3 getPosition() const;
+    void setPosition(const glm::dvec3& pos);
 
-    glm::vec3 getVelocity() const;
-    void setVelocity(const glm::vec3& vel);
+    glm::dvec3 getVelocity() const;
+    void setVelocity(const glm::dvec3& vel);
 
     float getMass() const;
-    void setMass(float m);
+    void setMass(double m);
 
-    void update(float deltaTime);              
-    void applyForce(const glm::vec3& force);   
+    void update(double deltaTime);              
+    void applyForce(const glm::dvec3& force);   
+    void resetForce();
 
     void setStatic(bool value) { isStatic = value; }
     bool getStatic() const { return isStatic; }
@@ -30,9 +31,11 @@ private:
     int sectorCount;
     int stackCount;
 
-    float mass = 1.0f;
-    glm::vec3 position{ 0.0f };
-    glm::vec3 velocity{ 0.0f };
+    double mass = 1.0;
+    glm::dvec3 position{ 0.0f };
+    glm::dvec3 velocity{ 0.0f };
+    glm::dvec3 currentForce{ 0.0f }; // New: To accumulate forces
+    glm::dvec3 acceleration{ 0.0f }; // New: To store current acceleration
 
     unsigned int VAO, VBO, EBO;
     std::vector<float> vertices;

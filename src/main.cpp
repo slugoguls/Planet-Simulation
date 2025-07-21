@@ -17,14 +17,14 @@ void processInput(GLFWwindow* window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-Camera camera(glm::vec3(0.0f, 20.0f, 100.0f));
-float lastX = SCR_WIDTH / 2.0f;
-float lastY = SCR_HEIGHT / 2.0f;
+Camera camera(glm::dvec3(0.0, 20.0, 100.0));
+double lastX = SCR_WIDTH / 2.0;
+double lastY = SCR_HEIGHT / 2.0;
 bool firstMouse = true;
-float deltaTime = 0.0f;
-float lastFrame = 0.0f;
+double deltaTime = 0.0;
+double lastFrame = 0.0;
 
-Gravity gravity(0.1f); 
+Gravity gravity(0.1); 
 
 int main() {
     glfwInit();
@@ -52,16 +52,25 @@ int main() {
 
     Shader shader(RESOURCES_PATH "Sphere/Sphere.vert", RESOURCES_PATH "Sphere/Sphere.frag");
 
-    Planet sun(10.0f, 1000.0f, glm::vec3(0.0f), glm::vec3(0.0f), "Sun");
+    Planet sun(10.0, 1000.0, glm::dvec3(0.0, 0.0, 0.0), glm::dvec3(0.0, 0.0, 0.0), "Sun");
+    sun.setColor(glm::dvec3(1.0, 1.0, 0.0)); // Bright yellow
 
-    Planet mercury(1.0f, 0.055f, glm::vec3(5.8f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 6.55f), "Mercury");
-    Planet venus(1.8f, 0.815f, glm::vec3(10.8f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 4.79f), "Venus");
-    Planet earth(2.0f, 1.0f, glm::vec3(15.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 4.08f), "Earth");
-    Planet mars(1.5f, 0.107f, glm::vec3(22.8f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 3.29f), "Mars");
-    Planet jupiter(8.0f, 317.8f, glm::vec3(77.9f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.79f), "Jupiter");
-    Planet saturn(7.5f, 95.2f, glm::vec3(143.3f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.33f), "Saturn");
-    Planet uranus(4.5f, 14.6f, glm::vec3(287.3f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.94f), "Uranus");
-    Planet neptune(4.2f, 17.2f, glm::vec3(449.5f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.75f), "Neptune");
+    Planet mercury(1.0, 0.06, glm::dvec3(39.0, 0.0, 0.0), glm::dvec3(0.0, 0.0, 1.601), "Mercury");
+    mercury.setColor(glm::dvec3(0.6, 0.6, 0.6)); // Gray
+    Planet venus(1.8, 0.82, glm::dvec3(72.0, 0.0, 0.0), glm::dvec3(0.0, 0.0, 1.178), "Venus");
+    venus.setColor(glm::dvec3(0.8, 0.5, 0.0)); // Orange-brown
+    Planet earth(2.0, 1.0, glm::dvec3(100.0, 0.0, 0.0), glm::dvec3(0.0, 0.0 , 1.000), "Earth");
+    earth.setColor(glm::dvec3(0.0, 0.0, 1.0)); // Blue
+    Planet mars(1.5, 0.11, glm::dvec3(152.0, 0.0, 0.0), glm::dvec3(0.0, 0.0, 0.811), "Mars");
+    mars.setColor(glm::dvec3(0.8, 0.2, 0.0)); // Red
+    Planet jupiter(8.0, 317.89, glm::dvec3(520.0, 0.0, 0.0), glm::dvec3(0.0, 0.438, 0.0), "Jupiter");
+    jupiter.setColor(glm::dvec3(0.9, 0.7, 0.5)); // Light brown
+    Planet saturn(7.5, 95.17, glm::dvec3(954.0, 0.0, 0.0), glm::dvec3(0.0, 0.0, 0.324), "Saturn");
+    saturn.setColor(glm::dvec3(0.9, 0.8, 0.6)); // Pale yellow
+    Planet uranus(4.5, 14.56, glm::dvec3(1922.0, 0.0, 0.0), glm::dvec3(0.0, 0.0 , 0.228), "Uranus");
+    uranus.setColor(glm::dvec3(0.5, 0.8, 0.9)); // Light blue
+    Planet neptune(4.2, 17.24, glm::dvec3(3006.0, 0.0, 0.0), glm::dvec3(0.0, 0.0, 0.182), "Neptune");
+    neptune.setColor(glm::dvec3(0.2, 0.2, 0.8)); // Dark blue
 
     sun.setStatic(true);
     gravity.addObject(&sun);
@@ -76,18 +85,17 @@ int main() {
 
 
     while (!glfwWindowShouldClose(window)) {
-        float currentFrame = static_cast<float>(glfwGetTime());
+        double currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-        if (deltaTime > 0.1f) deltaTime = 0.1f;
          
         processInput(window);
 
         glClearColor(0.05f, 0.05f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 10000.0f);
-        glm::mat4 view = camera.GetViewMatrix();
+        glm::dmat4 projection = glm::perspective(glm::radians(camera.Zoom), (double)SCR_WIDTH / (double)SCR_HEIGHT, 0.1, 10000.0);
+        glm::dmat4 view = camera.GetViewMatrix();
 
 		gravity.applyAll(deltaTime);
 
@@ -95,59 +103,94 @@ int main() {
         shader.setMat4("projection", projection);
         shader.setMat4("view", view);
 
-        glm::mat4 model = glm::mat4(1.0f);
+        // Light properties
+        glm::dvec3 lightPos = sun.getPosition();
+        glm::dvec3 lightColor = glm::dvec3(1.0, 1.0, 0.8); // Bright yellow light
+
+        shader.setVec3("lightPos", lightPos);
+        shader.setVec3("lightColor", lightColor);
+        shader.setVec3("viewPos", camera.Position);
+
+        // Draw Sun
+        glm::dmat4 model = glm::dmat4(1.0);
         model = glm::translate(model, sun.getPosition());
         shader.setMat4("model", model);
+        shader.setVec3("objectColor", sun.getColor());
+        shader.setVec3("emissiveColor", glm::dvec3(1.0, 1.0, 0.8)); // Sun is emissive
         sun.update(deltaTime);
         sun.draw();
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, earth.getPosition());
-		shader.setMat4("model", model);
-		earth.update(deltaTime);
-		earth.draw();
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, mercury.getPosition());
-		shader.setMat4("model", model);
-		mercury.update(deltaTime);
-		mercury.draw();
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, venus.getPosition());
-		shader.setMat4("model", model);
-		venus.update(deltaTime);
-		venus.draw();
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, mars.getPosition());
-		shader.setMat4("model", model);
-		mars.update(deltaTime);
-		mars.draw();
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, jupiter.getPosition());
-		shader.setMat4("model", model);
-		jupiter.update(deltaTime);
-		jupiter.draw();
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, saturn.getPosition());
-		shader.setMat4("model", model);
-		saturn.update(deltaTime);
-		saturn.draw();
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, uranus.getPosition());
-		shader.setMat4("model", model);
-		uranus.update(deltaTime);
-		uranus.draw();
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, neptune.getPosition());
+        // Draw Mercury
+        model = glm::dmat4(1.0);
+        model = glm::translate(model, mercury.getPosition());
         shader.setMat4("model", model);
-		neptune.update(deltaTime);
-		neptune.draw();
+        shader.setVec3("objectColor", mercury.getColor());
+        shader.setVec3("emissiveColor", glm::dvec3(0.0, 0.0, 0.0)); // Not emissive
+        mercury.update(deltaTime);
+        mercury.draw();
+
+        // Draw Venus
+        model = glm::dmat4(1.0);
+        model = glm::translate(model, venus.getPosition());
+        shader.setMat4("model", model);
+        shader.setVec3("objectColor", venus.getColor());
+        shader.setVec3("emissiveColor", glm::dvec3(0.0, 0.0, 0.0));
+        venus.update(deltaTime);
+        venus.draw();
+
+        // Draw Earth
+        model = glm::dmat4(1.0);
+        model = glm::translate(model, earth.getPosition());
+        shader.setMat4("model", model);
+        shader.setVec3("objectColor", earth.getColor());
+        shader.setVec3("emissiveColor", glm::dvec3(0.0, 0.0, 0.0));
+        earth.update(deltaTime);
+        earth.draw();
+
+        // Draw Mars
+        model = glm::dmat4(1.0);
+        model = glm::translate(model, mars.getPosition());
+        shader.setMat4("model", model);
+        shader.setVec3("objectColor", mars.getColor());
+        shader.setVec3("emissiveColor", glm::dvec3(0.0, 0.0, 0.0));
+        mars.update(deltaTime);
+        mars.draw();
+
+        // Draw Jupiter
+        model = glm::dmat4(1.0);
+        model = glm::translate(model, jupiter.getPosition());
+        shader.setMat4("model", model);
+        shader.setVec3("objectColor", jupiter.getColor());
+        shader.setVec3("emissiveColor", glm::dvec3(0.0, 0.0, 0.0));
+        jupiter.update(deltaTime);
+        jupiter.draw();
+
+        // Draw Saturn
+        model = glm::dmat4(1.0);
+        model = glm::translate(model, saturn.getPosition());
+        shader.setMat4("model", model);
+        shader.setVec3("objectColor", saturn.getColor());
+        shader.setVec3("emissiveColor", glm::dvec3(0.0, 0.0, 0.0));
+        saturn.update(deltaTime);
+        saturn.draw();
+
+        // Draw Uranus
+        model = glm::dmat4(1.0);
+        model = glm::translate(model, uranus.getPosition());
+        shader.setMat4("model", model);
+        shader.setVec3("objectColor", uranus.getColor());
+        shader.setVec3("emissiveColor", glm::dvec3(0.0, 0.0, 0.0));
+        uranus.update(deltaTime);
+        uranus.draw();
+
+        // Draw Neptune
+        model = glm::dmat4(1.0);
+        model = glm::translate(model, neptune.getPosition());
+        shader.setMat4("model", model);
+        shader.setVec3("objectColor", neptune.getColor());
+        shader.setVec3("emissiveColor", glm::dvec3(0.0, 0.0, 0.0));
+        neptune.update(deltaTime);
+        neptune.draw();
 
 
         glfwSwapBuffers(window);
@@ -179,8 +222,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
-    float xpos = static_cast<float>(xposIn);
-    float ypos = static_cast<float>(yposIn);
+    double xpos = xposIn;
+    double ypos = yposIn;
 
     if (firstMouse) {
         lastX = xpos;
@@ -188,8 +231,8 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
         firstMouse = false;
     }
 
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos;
+    double xoffset = xpos - lastX;
+    double yoffset = lastY - ypos;
 
     lastX = xpos;
     lastY = ypos;
@@ -199,5 +242,5 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    camera.ProcessMouseScroll(static_cast<float>(yoffset));
+    camera.ProcessMouseScroll(yoffset);
 }
